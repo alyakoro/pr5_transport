@@ -76,7 +76,7 @@ class ArrayAdapterActivity : AppCompatActivity() {
             }
         }
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Create character")
+            .setTitle("Delete character")
             .setMessage("Are you sure you want to delete the character ${character}")
             .setPositiveButton("Delete", listener)
             .setNegativeButton("Cancel", listener)
