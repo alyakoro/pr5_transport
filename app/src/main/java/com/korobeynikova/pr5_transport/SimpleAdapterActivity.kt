@@ -3,6 +3,8 @@ package com.korobeynikova.pr5_transport
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SimpleAdapter
 import android.os.Bundle
+import android.widget.AdapterView
+import androidx.appcompat.app.AlertDialog
 import com.korobeynikova.pr5_transport.databinding.ActivitySimpleListViewBinding
 
 class SimpleAdapterActivity: AppCompatActivity() {
@@ -13,7 +15,25 @@ class SimpleAdapterActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySimpleListViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupListViewSimple()
+        setupListViewWithSimpleGeneratedData()
+    }
+
+    private fun setupListViewWithSimpleGeneratedData(){
+        val data = (1..100).map {
+            mapOf(
+                KEY_TITLE to "Item #$it",
+                KEY_DESCRIPTION to "Description #$it"
+            )
+        }
+
+        val adapter = SimpleAdapter(
+            this,
+            data,
+            R.layout.item_custom,
+            arrayOf(KEY_TITLE, KEY_DESCRIPTION),
+            intArrayOf(R.id.titleTextView, R.id.descriptionTextView)
+        )
+        binding.listView.adapter = adapter
     }
 
     private fun setupListViewSimple() {
@@ -33,12 +53,26 @@ class SimpleAdapterActivity: AppCompatActivity() {
         )
 
         val adapter = SimpleAdapter(
-            this, data, android.R.layout.simple_list_item_2,
+            this,
+            data,
+            android.R.layout.simple_list_item_2,
             arrayOf(KEY_TITLE, KEY_DESCRIPTION),
             intArrayOf(android.R.id.text1, android.R.id.text2)
         )
         binding.listView.adapter = adapter
 
+        binding.listView.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id ->
+                val selectedItemTitle = data[position][KEY_TITLE]
+                val selectedItemDescriptor = data[position][KEY_DESCRIPTION]
+
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle(selectedItemTitle)
+                    .setMessage(getString(R.string.item_selected_message, selectedItemDescriptor))
+                    .setPositiveButton("ok") {dialog, whis ->}
+                    .create()
+                dialog.show()
+            }
     }
 
     companion object {

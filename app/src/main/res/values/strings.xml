@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">pr5_transport</string>
+    <string name="item_selected_message">You have selected the item: %1$s</string>
 </resources>
