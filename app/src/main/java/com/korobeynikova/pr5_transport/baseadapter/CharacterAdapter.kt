@@ -1,5 +1,52 @@
 package com.korobeynikova.pr5_transport.baseadapter
 
-typealias  onDeletePressed
-class CharacterAdapter {
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import com.korobeynikova.pr5_transport.databinding.ItemCharacterBinding
+
+typealias  onDeletePressedListener = (Character) -> Unit
+class CharacterAdapter (
+    private val characters:List<Character>,
+    private val onDeletePressedListener: onDeletePressedListener
+    ) : BaseAdapter(), View.OnClickListener {
+    override fun getCount(): Int {
+        return characters.size
+    }
+
+    override fun getItem(position: Int): Any {
+        return characters[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return characters[position].id
+    }
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val binding =
+            convertView?.tag as ItemCharacterBinding? ?: createBinding(parent.context)
+
+        val character = getItem(position)
+
+        binding.titleTextView.text = character.name
+        binding.deleteImageView.tag = character
+        binding.deleteImageView.visibility = if (character.isCustom) View.VISIBLE
+        else View.GONE
+
+        return binding.root
+    }
+
+    override fun onClick(v: View) {
+       val character = v.tag as Character
+        onDeletePressedListener.invoke(character)
+    }
+
+    private fun createBinding(context: Context): ItemCharacterBinding {
+        val binding = ItemCharacterBinding.inflate(LayoutInflater.from(context))
+        binding.deleteImageView.setOnClickListener(this)
+        binding.root.tag = binding
+        return binding
+    }
 }

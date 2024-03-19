@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Test title"
         android:textAllCaps="true"
-        android:textColor="@color/purple_700"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
