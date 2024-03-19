@@ -1,8 +1,13 @@
 package com.korobeynikova.pr5_transport.baseadapter
 
+import android.content.DialogInterface
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.korobeynikova.pr5_transport.databinding.ActivityListViewBinding
+import com.korobeynikova.pr5_transport.databinding.DialogAddCharacterBinding
+import com.korobeynikova.pr5_transport.R
+import kotlin.random.Random
 
 class BaseAdapterActivity :     AppCompatActivity() {
     private lateinit var binding: ActivityListViewBinding
@@ -21,19 +26,67 @@ class BaseAdapterActivity :     AppCompatActivity() {
         setContentView(binding.root)
 
         setupList()
-        binding.addButton.setonClickListener { onAddPressed() }
+        binding.addButton.setOnClickListener { onAddPressed() }
     }
 
     private fun setupList() {
         adapter = CharacterAdapter(data) {
             deleteCharacter(it)
         }
-        bindinq.listView.adapter = adapter
+        binding.listView.adapter = adapter
 
         binding.listView.setOnItemClickListener { parent, view, position, id ->
-            showCharacterInfo(adapter.getItem(position))
+            showCharacterInfo(adapter.getItem(position) as Character)
         }
     }
 
+    private fun onAddPressed(){
+        val dialogBinding = DialogAddCharacterBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Create character")
+            .setView(dialogBinding.root)
+            .setPositiveButton("Add") {d, which ->
+                val name = dialogBinding.characterNameEditText.text.toString()
+                if (name.isNotBlank()){
+                    createCharacter(name)
+                }
+            }
+            .create()
+        dialog.show()
+    }
 
+    private fun createCharacter(name: String){
+        val character = Character(
+            id = Random.nextLong(),
+            name = name,
+            isCustom = true
+        )
+        data.add(character)
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun showCharacterInfo(character: Character){
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle(character.name)
+            .setMessage(getString(R.string.character_info, character.name, character.id))
+            .setPositiveButton(R.string.ok) { _, _ ->}
+            .create()
+        dialog.show()
+    }
+
+    private fun deleteCharacter(character: Character) {
+        val listener = DialogInterface.OnClickListener {
+            dialog, which ->  if (which == DialogInterface.BUTTON_POSITIVE){
+                data.remove(character)
+                adapter.notifyDataSetChanged()
+            }
+        }
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle("Delete character")
+            .setMessage("Are you sure you want to delete the character ${character}")
+            .setPositiveButton( "Delete", listener)
+            .setNegativeButton("Cancel", listener)
+            .create()
+        dialog.show()
+    }
 }

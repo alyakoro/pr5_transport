@@ -32,8 +32,7 @@ class CharacterAdapter (
 
         binding.titleTextView.text = character.name
         binding.deleteImageView.tag = character
-        binding.deleteImageView.visibility = if (character.isCustom) View.VISIBLE
-        else View.GONE
+        binding.deleteImageView.visibility = if (character.isCustom) View.VISIBLE else View.GONE
 
         return binding.root
     }
