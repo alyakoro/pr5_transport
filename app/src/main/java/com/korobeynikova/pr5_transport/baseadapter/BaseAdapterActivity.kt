@@ -2,6 +2,8 @@ package com.korobeynikova.pr5_transport.baseadapter
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.korobeynikova.pr5_transport.databinding.ActivityListViewBinding
@@ -33,10 +35,19 @@ class BaseAdapterActivity :     AppCompatActivity() {
         adapter = CharacterAdapter(data) {
             deleteCharacter(it)
         }
-        binding.listView.adapter = adapter
+        binding.spiner.adapter = adapter
 
-        binding.listView.setOnItemClickListener { parent, view, position, id ->
-            showCharacterInfo(adapter.getItem(position) as Character)
+        binding.spiner.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val character = data[position]
+                binding.characterInfoTextView.text =
+                    getString(R.string.character_info, character.name, character.id)
+            }
         }
     }
 
@@ -63,15 +74,6 @@ class BaseAdapterActivity :     AppCompatActivity() {
         )
         data.add(character)
         adapter.notifyDataSetChanged()
-    }
-
-    private fun showCharacterInfo(character: Character){
-        val dialog = android.app.AlertDialog.Builder(this)
-            .setTitle(character.name)
-            .setMessage(getString(R.string.character_info, character.name, character.id))
-            .setPositiveButton(R.string.ok) { _, _ ->}
-            .create()
-        dialog.show()
     }
 
     private fun deleteCharacter(character: Character) {

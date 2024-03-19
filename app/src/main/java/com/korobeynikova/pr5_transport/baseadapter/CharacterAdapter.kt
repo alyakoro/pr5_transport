@@ -25,18 +25,30 @@ class CharacterAdapter (
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        return getDefaultView(position, convertView, parent, isDropdownView = false)
+    }
+
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        return getDefaultView(position, convertView, parent!!, isDropdownView = true)
+    }
+
+    private fun getDefaultView(
+        position: Int,
+        convertView: View?,
+        parent: ViewGroup,
+        isDropdownView: Boolean
+    ) : View {
         val binding =
             convertView?.tag as ItemCharacterBinding? ?: createBinding(parent.context)
 
         val character = getItem(position)
 
-        binding.titleTextView.text = character.name
+        binding.titleTextView.text = character.toString()
         binding.deleteImageView.tag = character
-        binding.deleteImageView.visibility = if (character.isCustom) View.VISIBLE else View.GONE
+        binding.deleteImageView.visibility = if (isDropdownView) View.GONE else View.VISIBLE
 
         return binding.root
     }
-
     override fun onClick(v: View) {
        val character = v.tag as Character
         onDeletePressedListener.invoke(character)

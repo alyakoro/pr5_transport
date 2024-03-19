@@ -37,9 +37,9 @@ class ArrayAdapterActivity : AppCompatActivity() {
             data
         )
 
-        binding.listView.adapter = adapter
+        binding.spiner.adapter = adapter
 
-        binding.listView.setOnItemClickListener { parent, view, position, id ->
+        binding.spiner.setOnItemClickListener { parent, view, position, id ->
             adapter.getItem(position)?.let {
                 deleteCharacter(it)
             }
